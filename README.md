@@ -23,7 +23,7 @@ sudo docker-compose -f docker-compose.yml -f docker-compose-dev.yml up
 
 ```
 
-## Run in Development Mode With docker-compose
+## Run in Production Mode With docker-compose
 
 To run the project in a production environment, use the following command:
 
