@@ -11,7 +11,7 @@ import {
 } from "./controllers/sessions.controller";
 import requireAuth from "./middleware/requireAuth";
 export default function routes(app: Express) {
-  app.get("/api/ping", (req, res, next) => {
+  app.get("/api/users/ping", (req, res, next) => {
     return res.status(200).json({
       message: "Pong",
     });
@@ -19,11 +19,18 @@ export default function routes(app: Express) {
 
   app.post("/api/users", validateResource(createUserSchema), createUserHandler);
   app.post(
-    "/api/sessions",
+    "/api/users/sessions",
     validateResource(createSessionSchema),
     createUserSessionHandler
   );
 
-  app.get("/api/sessions/me", requireAuth, getSessionsOfCurrentUser);
-  app.delete("/api/sessions/me", requireAuth, deleteSessionOfCurrentUser);
+  app.get("/api/users/sessions/me", requireAuth, getSessionsOfCurrentUser);
+  app.delete("/api/users/sessions/me", requireAuth, deleteSessionOfCurrentUser);
+
+  app.all("*", (req, res, next) => {
+    return res.status(404).json({
+      status: "Fail",
+      message: `Cant't find ${req.originalUrl} on this server!`,
+    });
+  });
 }

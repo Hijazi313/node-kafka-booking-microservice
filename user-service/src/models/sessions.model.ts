@@ -1,5 +1,4 @@
 import { Document, Schema, model } from "mongoose";
-import config from "config";
 import bcrypt from "bcryptjs";
 import { UserDocument } from "./users.model";
 export interface SessionDocument extends Document {
@@ -22,6 +21,6 @@ const sesssionsSchema = new Schema(
   }
 );
 
-const Sessions = model("Sesssion", sesssionsSchema);
+const Sessions = model("Session", sesssionsSchema);
 
 export default Sessions;

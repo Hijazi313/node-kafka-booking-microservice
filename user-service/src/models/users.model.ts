@@ -5,8 +5,10 @@ import {
   Schema,
   model,
 } from "mongoose";
-import config from "config";
+// import config from "config";
 import bcrypt from "bcryptjs";
+import config from "../config/default";
+import { NextFunction } from "express";
 
 export interface UserDocument extends Document {
   email: string;
@@ -20,7 +22,7 @@ export interface UserModel extends Model<UserDocument> {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const usersSchema = new Schema(
+const usersSchema = new Schema<UserDocument>(
   {
     email: {
       type: String,
@@ -48,15 +50,16 @@ const usersSchema = new Schema(
   }
 );
 
-usersSchema.pre("save", async function (next) {
-  const self = this as UserDocument;
-  if (!self.isModified("password")) {
-    return next;
+usersSchema.pre("save", async function (this: UserDocument, next) {
+  if (!this.isModified("password")) {
+    return next();
   }
-  const saltWorkFactor = config.get<number>("saltWorkFactor");
+
+  const saltWorkFactor = config.saltWorkFactor;
   const salt = await bcrypt.genSalt(saltWorkFactor);
-  const hash = bcrypt.hashSync(self.password, salt);
-  self.password = hash;
+  const hash = bcrypt.hashSync(this.password, salt);
+  this.password = hash;
+
   return next();
 });
 

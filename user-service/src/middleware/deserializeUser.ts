@@ -8,34 +8,41 @@ const deserializeUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const accessToken = get(req, "headers.authorization", "").replace(
-    /^Bearer\s/,
-    ""
-  );
+  const { accessToken, refreshToken } = req.cookies;
+  // console.log(1, accessToken1);
+  // const accessToken = get(req, "headers.authorization", "").replace(
+  //   /^Bearer\s/,
+  //   ""
+  // );
 
   // Get Refresh access token from request
   // console.log(req.headers);
-  const refreshToken = get(req, "headers.x-refresh");
+  // const refreshToken = get(req, "headers.x-refresh");
 
   if (!accessToken) return next();
   const { decoded, expired } = await verifyJwt(accessToken);
   // console.log(decoded);
   if (decoded) {
     // console.log(decoded);
-    res.locals.user = decoded;
+    req.user = decoded;
     return next();
   }
 
-  console.log({ expired, refreshToken });
+  // console.log(1);
+  // console.log({ expired, refreshToken });
   if (expired && refreshToken) {
     const newAccessToken = await reIssueAccessToken({
       refreshToken: refreshToken as string,
     });
-    console.log(newAccessToken);
+    // console.log("first", newAccessToken);
     if (newAccessToken) {
       res.setHeader("x-access-token", newAccessToken);
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        maxAge: 300000,
+      });
       const result = await verifyJwt(newAccessToken);
-      res.locals.user = result.decoded;
+      req.user = result.decoded;
     }
     return next();
   }

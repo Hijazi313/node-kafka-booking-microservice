@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev  --respawn  --transpile-only src/app.ts "
+    "dev": "ts-node-dev  --respawn  --transpile-only src/app.ts ",
+    "start": "node ./build/app.js",
+    "build": "tsc --skipLibCheck"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["user-service", "microservice", "node.js", "expressjs", "rest-api"],
+  "author": "Muhammad Hamza Hijazi",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "config": "^3.3.9",
+    "connect-redis": "^7.1.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dayjs": "^1.11.9",
     "dotenv": "^16.3.1",
@@ -22,21 +25,23 @@
     "nanoid": "^4.0.2",
     "pino": "^8.15.0",
     "pino-pretty": "^10.2.0",
+    "redis": "^4.6.10",
     "zod": "^3.22.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/bcryptjs": "^2.4.3",
     "@types/body-parser": "^1.19.2",
-    "@types/config": "^3.3.0",
+    "@types/cookie-parser": "^1.4.6",
     "@types/cors": "^2.8.13",
+    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/lodash": "^4.14.197",
     "@types/nanoid": "^3.0.0",
-    "@types/node": "^20.5.1",
+    "@types/node": "^20.10.4",
     "@types/pino": "^7.0.5",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.3"
   }
 }

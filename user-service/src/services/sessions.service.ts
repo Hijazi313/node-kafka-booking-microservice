@@ -3,7 +3,8 @@ import Sessions, { SessionDocument } from "../models/sessions.model";
 import { signJwt, verifyJwt } from "../utils/jwt.utils";
 import { get } from "lodash";
 import { findUser } from "./users.service";
-import config from "config";
+import config from "../config/default";
+// import config from "config";
 
 export async function createSession(sessionProps: {
   userId: string;
@@ -32,23 +33,25 @@ export async function reIssueAccessToken({
   refreshToken: string;
 }) {
   const { decoded } = await verifyJwt(refreshToken);
-  if (!decoded || !get(decoded, "_id")) return false;
+
+  if (!decoded || !get(decoded, "_doc._id")) return false;
 
   const session = await Sessions.findById(get(decoded, "session"));
 
-  // console.log(session);
   if (!session || !session.valid) return false;
   const user = await findUser({ _id: session.user });
+
   if (!user) return false;
 
   //  create an access token
   const accessToken = await signJwt(
     {
-      ...user,
+      _doc: user,
       session: session._id,
     },
     {
-      expiresIn: config.get<string>("refreshTokenTTL"),
+      // expiresIn: config.get<string>("refreshTokenTTL"),
+      expiresIn: config.refreshTokenTTL,
     }
   );
 
